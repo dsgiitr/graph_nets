@@ -111,12 +111,12 @@ As the name suggests, Graph Convolution Networks (GCNs), draw on the idea of Con
 A GCN is basically a neural network that operates on a graph. It will take a graph as an input and give some (we'll see what exactly) meaningful output.
 
 <b>GCNs come in two different styles</b>: 
-<font color="black">
+
 <ul>
  <li> <b>Spectral GCNs</b>: Spectral-based approaches define graph convolutions by introducing filters from the perspective of graph signal processing based on graph spectral theory.</li>
  <li> <b>Spatial GCNs</b>: Spatial-based approaches formulate graph convolutions as aggregating feature information from neighbours.</li>
 </ul>
-</font>
+
 Note: Spectral approach has the limitation that all the graph samples must have the same structure, i.e. homogeneous structure. But it is a hard constraint, as most of the real-world graph data have different structure and size for different samples i.e. heterogeneous structure. The spatial approach is agnostic of the graph structure.
 
 <h1><center><font color="green"> How GCNs?  </font></center></h1>
@@ -502,7 +502,7 @@ As you can see above, it has divided the data into two categories, and it is clo
 
 We also implemented GCNs using this great library [PyTorch Geometric](https://github.com/rusty1s/pytorch_geometric/) (PyG) with a super active maintainer [Matthias Fey](https://github.com/rusty1s/). PyG is specifically built for PyTorch lovers who need an easy, fast and simple way out to implement and test their work on various Graph Representation Learning papers.
 
-You can find the PyG notebook [here](TODO: Add link) with the implementation of GCNs trained on a Citation Network, the Cora Dataset.
+You can find the PyG notebook <b><font color="red">|_|_|_|_|_|[here](TODO: Add link)|_|_|_|_|_|</font></b> with the implementation of GCNs trained on a Citation Network, the Cora Dataset.
 <hr/>
 
 We strongly recommend reading up these references as well to make your understanding solid. 
