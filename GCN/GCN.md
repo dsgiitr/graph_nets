@@ -4,17 +4,9 @@ date: 2020-01-01T23:40:49+00:00
 description : "Machine Learning / Graph Representation Learning"
 type: post
 image: images/blogs/GCN/gcn_architecture.png
-author: 
-- Anirudh Dagar
-- Shubham Chandel
-- Shashank Gupta
-- Ajit Pant
+author: Anirudh Dagar, Ajit Pant, Shubham Chandel, Shashank Gupta
 tags: ["Graph Representation Learning"]
 ---
-
-
-
-<h1><center>A Review : Graph Convolutional Networks (GCN)</center></h1>
 
 <h1><center><font color="green"> Introduction</font></center></h1>
 
@@ -89,7 +81,7 @@ The key properties of the assumption of compositionality are
 
 <b>2D Convolution vs. Graph Convolution</b>
 
-If you haven't figured it out, not all types of data lie on the Euclidean Space and such data types, including graphs, manifolds, and 3D objects, thus rendering the previous 2D Convolution useless. Hence, the need for GCNs which have the ability to capture the inherent structure and topology of the given graph. Hence this blog :P. 
+If you haven't figured it out, not all types of data lie on the Euclidean Space and such are the graphs data types, including manifolds, and 3D objects, thus rendering the previous 2D Convolution useless. Hence, the need for GCNs which have the ability to capture the inherent structure and topology of the given graph. Hence this blog :P. 
 
 <left><img src="/images/blogs/GCN/CNN_to_GCN.jpg" ></left>
 
@@ -178,11 +170,11 @@ Is that correct?
 
 
 It is sort of! But it is not exactly what we want. If you were unable to arrive at the problem, fret not. Let's see what exactly are the <b><font color="red">'problems'</font></b> (yes, more than one problem) this function might lead to:
-<ul>
- <li> <b>The new node features $H^{i}$ are not a function of its previous representation</b>: As you might have noticed, the aggregated representation of a node is only a function of its neighbours and does not include its own features. If not handled, this may lead to the loss of the node identity and hence rendering the feature representations useless. We can easily fix this by adding self-loops, that is an edge starting and ending on the same node; in this way, a node will become a neighbour of itself. Mathematically, self-loops are nothing but can be expressed by adding the identity matrix to the adjacency matrix. </li>
+
+<b><font color="red">1. The new node features $H^{i}$ are not a function of its previous representation</b></font>: As you might have noticed, the aggregated representation of a node is only a function of its neighbours and does not include its own features. If not handled, this may lead to the loss of the node identity and hence rendering the feature representations useless. We can easily fix this by adding self-loops, that is an edge starting and ending on the same node; in this way, a node will become a neighbour of itself. Mathematically, self-loops are nothing but can be expressed by adding the identity matrix to the adjacency matrix.
 
 
-<li> <b>Degree of the nodes lead to the values being scaled asymmetrically across the graph</b>: In simple words, nodes that have a large number of neighbours (higher degree) will get much more input in the form of neighbourhood aggregation from the adjacent nodes and hence will have a larger value and vice versa may be true for nodes with smaller degrees having small values. This can lead to problems during the training of the network. To deal with the issue, we will be using normalisation, i.e., reduce all values in such a way that the values are on the same scale. Normalising $A$ such that all rows sum to one, i.e. $D^{−1}A$, where $D$ is the diagonal node degree matrix, gets rid of this problem. Multiplying with $D^{−1}A$ now corresponds to taking the average of neighboring node features. According to the authors, after observing empirical results, they suggest "In practice, dynamics get more interesting when we use symmetric normalisation, i.e. $\hat{D}^{-\frac{1}{2}}\hat{A}\hat{D}^{-\frac{1}{2}}$ (as this no longer amounts to mere averaging of neighbouring nodes).</li>
+<b><font color="red">2. Degree of the nodes lead to the values being scaled asymmetrically across the graph</b></font>: In simple words, nodes that have a large number of neighbours (higher degree) will get much more input in the form of neighbourhood aggregation from the adjacent nodes and hence will have a larger value and vice versa may be true for nodes with smaller degrees having small values. This can lead to problems during the training of the network. To deal with the issue, we will be using normalisation, i.e., reduce all values in such a way that the values are on the same scale. Normalising $A$ such that all rows sum to one, i.e. $D^{−1}A$, where $D$ is the diagonal node degree matrix, gets rid of this problem. Multiplying with $D^{−1}A$ now corresponds to taking the average of neighboring node features. According to the authors, after observing empirical results, they suggest "In practice, dynamics get more interesting when we use symmetric normalisation, i.e. $\hat{D}^{-\frac{1}{2}}\hat{A}\hat{D}^{-\frac{1}{2}}$ (as this no longer amounts to mere averaging of neighbouring nodes).
  
 </ul>
 After addressing the two problems stated above, the new propagation function $f$ is:
@@ -195,14 +187,22 @@ where
  - $I$ is the identity matrix
  - $\hat{D}$  is the diagonal node degree matrix of $\hat{A}$.
 
-<h1><center><font color="green">  Implementing GCNs from Scratch in PyTorch</font></center></h1>
+<hr/>
 
-We are now ready to put all of the tools together to deploy our very first fully-functional Graph Convolutional Network. In this tutorial, we will be training GCN on the 'Zachary Karate Club Network'. We will be using the **'Semi Supervised Graph Learning Model'** proposed in the paper by [Thomas Kipf and Max Welling](https://arxiv.org/abs/1609.02907).
+<br/>
 
-<h1><center><font color="green"> Zachary Karate Club </font></center></h1>
+<h1><center><font color="green">Implementing GCNs from Scratch in PyTorch</font></center></h1>
+
+<br/>
+
+We are now ready to put all of the tools together to deploy our very first fully-functional Graph Convolutional Network. In this tutorial, we will be training GCN on the 'Zachary Karate Club Network'. We will be using the '[Semi Supervised Graph Learning Model](https://arxiv.org/abs/1609.02907)' proposed in the paper by <b>Thomas Kipf & Max Welling</b>.
+
+
+<center><h2><u> Zachary Karate Club </u></h2></center>
 
 During the period from 1970-1972, Wayne W. Zachary observed the people belonging to a local karate club. He represented these people as nodes in a graph. And added an edge between a pair of people if they interacted with each other. The result was the graph shown below.
-<img src="/images/blogs/GCN/karate_club.png" >
+
+<center><img src="/images/blogs/GCN/karate_club.png" width="800x"></center>
 
 
 During the study, an interesting event happened. A conflict arose between the administrator "John A" and instructor "Mr. Hi" (pseudonyms), which led to the split of the club into two. Half of the members formed a new club around Mr. Hi; members from the other part found a new instructor or gave up karate. 
@@ -213,7 +213,7 @@ Zachary used the maximum flow – minimum cut Ford–Fulkerson algorithm for thi
 
 Here we will be using the Semi-Supervised Graph Learning Method. Semi-Supervised means that we have labels for only some of the nodes, and we have to find the labels for other nodes. Like in this example we have the labels for only the nodes belonging to 'John A' and 'Mr. Hi', we have not been provided with labels for any other member, and we have to predict that only on the basis of the graph given to us.
 
-<h1><center><font color="green"> Loading Required Libraries </font></center></h1>
+<h1><center><font color="green"> Required Imports </font></center></h1>
 
 In this post, we will be using PyTorch and Matplotlib.
 
@@ -225,6 +225,7 @@ import torch.optim as optim
 import matplotlib.pyplot as plt
 import imageio
 ```
+<br/>
 
 <h1><center><font color="green"> The Convolutional Layer  </font></center></h1>
 
@@ -239,16 +240,12 @@ class GCNConv(nn.Module):
         self.D     = torch.diag(torch.sum(A,1))
         self.D     = self.D.inverse().sqrt()
         self.A_hat = torch.mm(torch.mm(self.D, self.A_hat), self.D)
-        self.W     = nn.Parameter(torch.rand(in_channels,out_channels, requires_grad=True))
+        self.W     = nn.Parameter(torch.rand(in_channels,out_channels))
     
     def forward(self, X):
         out = torch.relu(torch.mm(torch.mm(self.A_hat, X), self.W))
         return out
-```
 
-The Net class will combine multiple Conv layer.
-
-```python
 class Net(torch.nn.Module):
     def __init__(self,A, nfeat, nhid, nout):
         super(Net, self).__init__()
@@ -261,10 +258,12 @@ class Net(torch.nn.Module):
         return H2
 ```
 
+<br/>
 
 ```python
-# 'A' is the adjacency matrix, it contains 1 at a position (i,j) if there is a edge between the node i and node j.
-A=torch.Tensor([[0,1,1,1,1,1,1,1,1,0,1,1,1,1,0,0,0,1,0,1,0,1,0,0,0,0,0,0,0,0,0,1,0,0],
+# 'A' is the adjacency matrix, it contains 1 at a position (i,j)
+# if there is a edge between the node i and node j.
+A = torch.Tensor([[0,1,1,1,1,1,1,1,1,0,1,1,1,1,0,0,0,1,0,1,0,1,0,0,0,0,0,0,0,0,0,1,0,0],
                 [1,0,1,1,0,0,0,1,0,0,0,0,0,1,0,0,0,1,0,1,0,1,0,0,0,0,0,0,0,0,1,0,0,0],
                 [1,1,0,1,0,0,0,1,1,1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,1,0],
                 [1,1,1,0,0,0,0,1,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
@@ -299,200 +298,63 @@ A=torch.Tensor([[0,1,1,1,1,1,1,1,1,0,1,1,1,1,0,0,0,1,0,1,0,1,0,0,0,0,0,0,0,0,0,1
                 [0,0,1,0,0,0,0,0,1,0,0,0,0,0,1,1,0,0,1,0,1,0,1,1,0,0,0,0,0,1,1,1,0,1],
                 [0,0,0,0,0,0,0,0,1,1,0,0,0,1,1,1,0,0,1,1,1,0,1,1,0,0,1,1,1,1,1,1,1,0]
                 ])
+
+target=torch.tensor([0,-1,-1,-1, -1, -1, -1, -1,-1,-1,-1,-1, -1, -1, -1, -1,-1,-1,-1,-1, -1, -1, -1, -1,-1,-1,-1,-1, -1, -1, -1, -1,-1,1])
 ```
 
 In this example, we have the label for admin(node 1) and instructor(node 34) so only these two contain the class label(0 and 1) all other are set to -1, which means that the predicted value of these nodes will be ignored in the computation of loss function.
 
 
-```python
-target=torch.tensor([0,-1,-1,-1, -1, -1, -1, -1,-1,-1,-1,-1, -1, -1, -1, -1,-1,-1,-1,-1, -1, -1, -1, -1,-1,-1,-1,-1, -1, -1, -1, -1,-1,1])
-```
-
 X is the feature matrix. Since we don't have any feature of each node, we will just be using the one-hot encoding corresponding to the index of the node.
 
 
+<h1><center><font color="green"> Training </font></center></h1>
+
 ```python
 X=torch.eye(A.size(0))
-```
 
-Here we are creating a Network with 10 features in the hidden layer and 2 in the output layer.
+# Here we are creating a Network with 10 features
+# in the hidden layer and 2 in the output layer.
 
-
-```python
 T=Net(A,X.size(0), 10, 2)
-```
 
-<h1><center><font color="green"> Training  </font></center></h1>
-
-
-```python
 criterion = torch.nn.CrossEntropyLoss(ignore_index=-1)
 optimizer = optim.SGD(T.parameters(), lr=0.01, momentum=0.9)
-```
 
-
-```python
 loss=criterion(T(X),target)
-```
 
 
-```python
+# Plot animation using celluloid
+
+fig = plt.figure()
+camera = Camera(fig)
+
 for i in range(200):
     optimizer.zero_grad()
     loss=criterion(T(X), target)
     loss.backward()
     optimizer.step()
     l=(T(X));
+
+    plt.scatter(l.detach().numpy()[:,0],l.detach().numpy()[:,1],
+        c=[0, 0, 0, 0 ,0 ,0 ,0, 0, 1, 1, 0 ,0, 0, 0, 1 ,1 ,0 ,0
+        ,1, 0, 1, 0 ,1 ,1, 1, 1, 1 ,1 ,1, 1, 1, 1, 1, 1 ])
     
-    # Plot for every 10 steps
-    if i%10==0:
-        plt.scatter(l.detach().numpy()[:,0],l.detach().numpy()[:,1],c=[0, 0, 0, 0 ,0 ,0 ,0, 0, 1, 1, 0 ,0, 0, 0, 1 ,1 ,0 ,0 ,1, 0, 1, 0 ,1 ,1, 1, 1, 1 ,1 ,1, 1, 1, 1, 1, 1 ])
-        for i in range(l.shape[0]):
-            plt.text(l[i,0], l[i,1], str(i+1))
-        plt.show()
+    for i in range(l.shape[0]):
+        text_plot = plt.text(l[i,0], l[i,1], str(i+1))
+
+    camera.snap()
+
+    if i%20==0:
         print("Cross Entropy Loss: =", loss.item())
-    
+
+animation = camera.animate(blit=False, interval=150)
+animation.save('./train_karate_animation.mp4', writer='ffmpeg', fps=60)
+HTML(animation.to_html5_video())
 ```
 
 
-<img src="/images/blogs/GCN/GCN_Blog%2BCode_files/GCN_Blog%2BCode_26_0.png" >
-
-
-    Cross Entropy Loss: = 0.8178678750991821
-
-
-
-<img src="/images/blogs/GCN/GCN_Blog%2BCode_files/GCN_Blog%2BCode_26_2.png" >
-
-
-    Cross Entropy Loss: = 0.7483316659927368
-
-
-
-<img src="/images/blogs/GCN/GCN_Blog%2BCode_files/GCN_Blog%2BCode_26_4.png" >
-
-
-    Cross Entropy Loss: = 0.6594112515449524
-
-
-
-<img src="/images/blogs/GCN/GCN_Blog%2BCode_files/GCN_Blog%2BCode_26_6.png" >
-
-
-    Cross Entropy Loss: = 0.5761473178863525
-
-
-
-<img src="/images/blogs/GCN/GCN_Blog%2BCode_files/GCN_Blog%2BCode_26_8.png" >
-
-
-    Cross Entropy Loss: = 0.49485743045806885
-
-
-
-<img src="/images/blogs/GCN/GCN_Blog%2BCode_files/GCN_Blog%2BCode_26_10.png" >
-
-
-    Cross Entropy Loss: = 0.41121095418930054
-
-
-
-<img src="/images/blogs/GCN/GCN_Blog%2BCode_files/GCN_Blog%2BCode_26_12.png" >
-
-
-    Cross Entropy Loss: = 0.32750385999679565
-
-
-
-<img src="/images/blogs/GCN/GCN_Blog%2BCode_files/GCN_Blog%2BCode_26_14.png" >
-
-
-    Cross Entropy Loss: = 0.25075453519821167
-
-
-
-<img src="/images/blogs/GCN/GCN_Blog%2BCode_files/GCN_Blog%2BCode_26_16.png" >
-
-
-    Cross Entropy Loss: = 0.18746334314346313
-
-
-
-<img src="/images/blogs/GCN/GCN_Blog%2BCode_files/GCN_Blog%2BCode_26_18.png" >
-
-
-    Cross Entropy Loss: = 0.13979440927505493
-
-
-
-<img src="/images/blogs/GCN/GCN_Blog%2BCode_files/GCN_Blog%2BCode_26_20.png" >
-
-
-    Cross Entropy Loss: = 0.10588118433952332
-
-
-
-<img src="/images/blogs/GCN/GCN_Blog%2BCode_files/GCN_Blog%2BCode_26_22.png" >
-
-
-    Cross Entropy Loss: = 0.08227509260177612
-
-
-
-<img src="/images/blogs/GCN/GCN_Blog%2BCode_files/GCN_Blog%2BCode_26_24.png" >
-
-
-    Cross Entropy Loss: = 0.06576760113239288
-
-
-
-<img src="/images/blogs/GCN/GCN_Blog%2BCode_files/GCN_Blog%2BCode_26_26.png" >
-
-
-    Cross Entropy Loss: = 0.0539877712726593
-
-
-
-<img src="/images/blogs/GCN/GCN_Blog%2BCode_files/GCN_Blog%2BCode_26_28.png" >
-
-
-    Cross Entropy Loss: = 0.045352302491664886
-
-
-
-<!-- ![png](GCN_Blog%2BCode_files/GCN_Blog%2BCode_26_30.png) -->
-<img src="/images/blogs/GCN/GCN_Blog%2BCode_files/GCN_Blog%2BCode_26_30.png" >
-
-
-    Cross Entropy Loss: = 0.03884197026491165
-
-
-
-<img src="/images/blogs/GCN/GCN_Blog%2BCode_files/GCN_Blog%2BCode_26_32.png" >
-
-
-    Cross Entropy Loss: = 0.033803340047597885
-
-
-
-<img src="/images/blogs/GCN/GCN_Blog%2BCode_files/GCN_Blog%2BCode_26_34.png" >
-
-
-    Cross Entropy Loss: = 0.02981167659163475
-
-
-
-<img src="/images/blogs/GCN/GCN_Blog%2BCode_files/GCN_Blog%2BCode_26_36.png" >
-
-
-    Cross Entropy Loss: = 0.026584960520267487
-
-
-
-<img src="/images/blogs/GCN/GCN_Blog%2BCode_files/GCN_Blog%2BCode_26_38.png" >
-
-
-    Cross Entropy Loss: = 0.023930732160806656
+<center><img src="/images/blogs/GCN/train_karate_animation.gif"></center>
 
 
 As you can see above, it has divided the data into two categories, and it is close to what happened to reality. 
@@ -502,30 +364,33 @@ As you can see above, it has divided the data into two categories, and it is clo
 
 We also implemented GCNs using this great library [PyTorch Geometric](https://github.com/rusty1s/pytorch_geometric/) (PyG) with a super active maintainer [Matthias Fey](https://github.com/rusty1s/). PyG is specifically built for PyTorch lovers who need an easy, fast and simple way out to implement and test their work on various Graph Representation Learning papers.
 
-You can find the PyG notebook <b><font color="red">|_|_|_|_|_|[here](TODO: Add link)|_|_|_|_|_|</font></b> with the implementation of GCNs trained on a Citation Network, the Cora Dataset.
+You can find our implementation made using PyTorch Geometric in the following notebook <b><font color="red">[GCN_PyG Notebook](https://github.com/dsgiitr/graph_nets/blob/master/GCN/GCN_PyG.ipynb)</font></b> with GCN trained on a Citation Network, the Cora Dataset. Also all the code used in the blog along with IPython notebooks can be found at the github repository <b>[graph_nets](https://github.com/dsgiitr/graph_nets)</b>.
+
 <hr/>
 
+
+<h1> References </h1>
 We strongly recommend reading up these references as well to make your understanding solid. 
 
-<strong>Also, remember I asked you to remember one thing? To answer that read up on this amazing blog which tries to understand if GCNs really are powerful as they claim to be. [How powerful are Graph Convolutions?](https://www.inference.vc/how-powerful-are-graph-convolutions-review-of-kipf-welling-2016-2/)</strong>
+<strong>Also, remember we asked you to remember one thing? To answer that read up on this amazing blog which tries to understand if GCNs really are powerful as they claim to be. [How powerful are Graph Convolutions?](https://www.inference.vc/how-powerful-are-graph-convolutions-review-of-kipf-welling-2016-2/)</strong>
 
+* [Code & GitHub Repository](https://github.com/dsgiitr/graph_nets)
 
-<h1><center><font color="green"> References  </font></center></h1>
+* [Blog GCNs by Thomas Kipf](https://tkipf.github.io/graph-convolutional-networks/)
 
- [Blog GCNs by Thomas Kipf](https://tkipf.github.io/graph-convolutional-networks/)<br>
-  [Semi-Supervised Classification with Graph Convolutional Networks by Thomas Kipf and Max Welling](https://arxiv.org/abs/1609.02907)<br>
- [How to do Deep Learning on Graphs with Graph Convolutional Networks by Tobias Skovgaard Jepsen](https://towardsdatascience.com/how-to-do-deep-learning-on-graphs-with-graph-convolutional-networks-7d2250723780)<br>
- [How powerful are Graph Convolutions?](https://www.inference.vc/how-powerful-are-graph-convolutions-review-of-kipf-welling-2016-2/)<br>
- [PyTorch Geometric](https://github.com/rusty1s/pytorch_geometric)<br>
+* [Semi-Supervised Classification with Graph Convolutional Networks by Thomas Kipf and Max Welling](https://arxiv.org/abs/1609.02907)
+
+* [How to do Deep Learning on Graphs with Graph Convolutional Networks by Tobias Skovgaard Jepsen](https://towardsdatascience.com/how-to-do-deep-learning-on-graphs-with-graph-convolutional-networks-7d2250723780)
+
+* [PyTorch Geometric](https://github.com/rusty1s/pytorch_geometric)
+
 <hr/>
 
 
-<h1><center><font color="green"> Written By </font></center></h1>
+<h1> Written By </h1>
 <ul>
 
-<li> Anirudh Dagar</li>
-<li> Shubham Chandel</li>
-<li> Shashank Gupta</li>
 <li> Ajit Pant</li>
-
-
+<li> Shubham Chandel</li>
+<li> Anirudh Dagar</li>
+<li> Shashank Gupta</li>
