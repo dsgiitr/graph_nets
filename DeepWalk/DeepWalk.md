@@ -1,61 +1,56 @@
 ---
-title: "Deepwalk"
+title: "Understanding Deepwalk"
 date: 2020-01-01T23:40:49+00:00
 description : "Machine Learning / Graph Representation Learning"
 type: post
-image: 
-author: Ajit Pant, Shubham Chandel, Anirudh Dagar
+image: https://miro.medium.com/max/4005/1*j-P55wBp5PP9oqrxDxdDpw.png
+author: Ajit Pant, Shubham Chandel, Anirudh Dagar, Shashank Gupta
 tags: ["Graph Representation Learning"]
 ---
 
-
-<!-- # DeepWalk -->
-<h1><center>Understanding Deepwalk</center></h1>
-As a part of this blog series and continuing with the tradition of extracting useful graph features by considering the topology of the network graph using machine learning, this blog deals with Deep Walk. This is a simple unsupervised online learning approach, very similar to language modeling used in <strong>NLP</strong>, where the goal is to generate word embeddings. In this case, generalizing the same concept, it merely tries to learn latent representations of nodes/vertices of a given graph. These graph embeddings, which capture neighborhood similarity and community membership, can then be used for learning downstream tasks on the graph. 
+This is the first in this blog series <font color="green"><b>Explained: Graph Representation Learning</b></font> and to discuss extraction useful graph features and node embeddings by considering the topology of the network graph using machine learning, this blog deals with Deep Walk. This is a simple unsupervised online learning approach, very similar to language modeling used in <strong>NLP</strong>, where the goal is to generate word embeddings. In this case, generalizing the same concept, it merely tries to learn latent representations of nodes/vertices of a given graph. These graph embeddings, which capture neighborhood similarity and community membership, can then be used for learning downstream tasks on the graph. 
 
 
-<!-- ![Input Graph to Embdeddings](./karate_to_embedding.jpg) -->
-<img src="/images/blogs/deepwalk_images/karate_to_embedding.jpg" height =150 width=700x/>
+<center><img src="/images/blogs/DeepWalk/karate_to_embedding.jpg" width=500x/></center>
 <br>
-<!-- ## Motivation -->
+
 <h2><font color="red" >Motivation</font></h2>
 
 Assume a setting, given a graph G where you wish to convert the nodes into embedding vectors, and the only information about a node are the indices of the nodes to which it is connected (adjacency matrix). Since there is no initial feature matrix corresponding to the data, we construct a feature matrix which will have all the randomly selected nodes. There can be multiple methods to select these, but here we are assuming that they are normally sampled (though it won't make much of a difference even if they are taken from some other distribution).
 
 
-<!-- ## Random Walks -->
 <h1><font color="black" >Random Walks </font></h1>
 Random walk rooted at vertex $v_i$ as $W_{v_i}$. It is a stochastic process with random variables ${W^1}_{v_i}$, ${W^2}_{v_i}$, $. . .$, ${W^k}_{v_i}$ such that ${W^{k+1}}{v_i}$ is a vertex chosen at random from the
 neighbors of vertex $v_k$. Random Walk distances are good features for many problems. We'll be discussing how these short random walks are analogous to the sentences in the language modeling setting and how we can carry the concept of context windows to graphs as well.
 
-<br>
+<hr/>
 <!-- ## What is Power Law? -->
-<h2><font color="#4ADAFA" >What is Power Law? </font></h2>
+<h2>What is Power Law? </font></h2>
 A scale-free network is a network whose degree distribution follows a power law, at least asymptotically. That is, the fraction $P(k)$ of nodes in the network having $k$ connections to other nodes goes for large values of $k$ as
 $P(k) \sim k^{-\gamma}$ where $k=2,3$ etc.
 
 <!--![Power Law Graph](./Power_Law_Graph.gif) -->
-<img src="/images/blogs/deepwalk_images/Power_Law_Graph.gif" height =400 width=800x/>
+<center><img src="/images/blogs/DeepWalk/Power_Law_Graph.gif" width=600x/></center>
 
 The network of global banking activity with nodes representing the absolute size of assets booked in the respective jurisdiction and the edges between them the exchange of financial assets, with data taken from the IMF, is a scale-free network and follows Power Law. We can then see clearly how very few core nodes dominate this network, there are approximately 200 countries in the world, but these 19 most significant jurisdictions in terms of capital together are responsible for over 90% of the assets.
 
 <!-- <img src="./Power_Law_Example.jpg" alt="Input Graph to Embdeddings" width="600"/> -->
-<img src="/images/blogs/deepwalk_images/Power_Law_Example.jpg" height =400 width=800x/>
+<center><img src="/images/blogs/DeepWalk/Power_Law_Example.jpg" width=700x/></center>
 
 These highly centralized networks are more formally called scale-free or power-law networks, that describe a power or exponential relationship between the degree of connectivity a node has and the frequency of its occurrence. [More](https://www.youtube.com/watch?v=qmCrtuS9vtU) about centralized networks and power law.
 
-<!-- ### Why is it important here? -->
+<hr/>
 <h2><center>Why is it important here? </center></h2>
 Social networks, including collaboration networks, computer networks, financial networks, and Protein-protein interaction networks are some examples of networks claimed to be scale-free.
 
 According to the authors,<strong> "If the degree distribution of a connected graph follows a power law (i.e. scale-free), we observe that the frequency which vertices appear in the short random walks will also follow a power-law distribution. Word frequency in natural language follows a similar distribution, and techniques from language modeling account for this distributional behavior."</strong>
 
 <!-- ![NLP vs Graph Random Walks Power Law D](./NLP_vs_Graph.jpg) -->
-<img src="/images/blogs/deepwalk_images/NLP_vs_Graph.jpg" height =300 width=800x/>
-*$(a)$ comes from a series of short random walks on a scale-free graph, and $(b)$ comes from the text of 100,000 articles from the English Wikipedia.*
+<center><img src="/images/blogs/DeepWalk/NLP_vs_Graph.jpg" width=800x/></center>
+<center>$(a)$ comes from a series of short random walks on a scale-free graph, and $(b)$ comes from the text of 100,000 articles from the English Wikipedia.</center>
 
+<hr/>
 
-<!-- ## Intuition with SkipGram -->
 <h1><font ><center>Intuition with SkipGram </font></center></h1>
 Think about the below unrelated problem for now:-
 
@@ -69,11 +64,10 @@ From the above sentences you can see that 1 and 2 are related to each other, so 
 
 <!-- #### But, How? -->
 <h4><font color="black" >But, How? </font></h4>
-First, let's get rid of the punctuations and assign a random vector to each word. Now since these vectors are assigned randomly, it implies the current representation is useless. We'll use our good old friend, *probability*, to convert these into meaningful representations. The aim is to increase the probability of a word occurring, considering the terms around it. Let's assume the probability is given by $P(x|y)$, where $y$ is the set of words that appear in the same sentence in which $x$ occurs. Remember we are only taking one sentence at a time, so first we'll maximize the probability of <font color="#11EE75">'Hi'</font> given <font color="#11EE75">{'I', 'am', 'Bert'} </font>, then we'll maximize the probability of <font color="#11EE75">'I'</font> given <font color="#11EE75">{'Hi', 'am', 'Bert'}</font>. We will do it for each word in the first sentence, and then for the second sentence. Repeat this procedure for all the sentences over and over again until the feature vectors have converged. 
+First, let's get rid of the punctuations and assign a random vector to each word. Now since these vectors are assigned randomly, it implies the current representation is useless. We'll use our good old friend, *probability*, to convert these into meaningful representations. The aim is to increase the probability of a word occurring, considering the terms around it. Let's assume the probability is given by $P(x|y)$, where $y$ is the set of words that appear in the same sentence in which $x$ occurs. Remember we are only taking one sentence at a time, so first we'll maximize the probability of <font color="green">'Hi'</font> given <font color="green">{'I', 'am', 'Bert'} </font>, then we'll maximize the probability of <font color="green">'I'</font> given <font color="green">{'Hi', 'am', 'Bert'}</font>. We will do it for each word in the first sentence, and then for the second sentence. Repeat this procedure for all the sentences over and over again until the feature vectors have converged. 
 
 One question that may arise now is, 'How do these feature vectors relate with the probability?'. The answer is that in the probability function, we'll utilize the word vectors assigned to them. But, aren't those vectors random? Ahh, they are at the start, but we promise you by the end of the blog they would have converged to the values, which gives some meaning to those seemingly random numbers.
 
-<!-- #### So, What exactly the probability function helps us with? -->
 
 <h3><font  >So, What exactly the probability function helps us with? </font></h3>
 What does it mean to find the probability of a vector given other vectors? This is a simple question with a pretty simple answer, take it as a fill in the blank problem that you may have dealt with in the primary school,
@@ -83,7 +77,6 @@ What does it mean to find the probability of a vector given other vectors? This 
 What is the most likely guess? Most people will fill it with an 'are'. (Unless you are pretending to be over smart in an attempt to prove how cool you are). You were able to fill that because you've seen some examples of the word 'are' previously in life, which help you with the context. The probability function is also trying to do the same; it is finding out the word which is most likely to occur given the words that are surrounding it.
 
 
-<!-- #### But this still doesn't explain how it's going to do that. -->
 <h4>But but this still doesn't explain how it's going to do that.</h4>
 In case you guessed 'Neural Network', you are correct. In this blog we'll be using neural nets (feeling sleepy now, so let's wrap this up)
 
@@ -96,9 +89,9 @@ Lets suppose the words in the vocabulary are $V_1$, $V_2$, $...$ $V_i$, $....$ $
 
 So a simple neural network will help us solve the fill in the blank problem.
 
+<hr/>
 
-<!-- ## Deep Walk = SkipGram Analogy + Random Walks -->
-<h3><font color="#35E820" >Deep Walk = SkipGram Analogy + Random Walks</font></h3>
+<h3><font color="green">Deep Walk = SkipGram Analogy + Random Walks</font></h3>
 These random walks can be thought of as short sentences and phrases in a special language; the direct analogy is to estimate the likelihood of observing vertex $v_i$ given all the previous vertices visited so far in the random walk, i.e., Our goal is to learn a latent representation, not only a probability distribution of node co-occurrences, and so we introduce a mapping function $ Φ: v ∈ V→R^{|V|×d} $. This mapping $Φ$ represents the latent social representation associated with each vertex $v$ in the graph. (In practice, we represent $Φ$ by a $|V|×d$ matrix of free parameters, which will serve later on as our $X_E$).
 
 The problem then, is to estimate the likelihood: $ Pr ({v}_{i} | Φ(v1), Φ(v2), · · · , Φ(vi−1))) $
@@ -110,14 +103,14 @@ In simple words, *DeepWalk* algorithm uses the notion of Random Walks to get the
 Mathematically the Deep Walk algorithm is defined as follows,
 
 <!-- ![Deep Walk Algorithm](./DeepWalk_Algo.jpg) -->
-<img src="/images/blogs/deepwalk_images/DeepWalk_Algo.jpg" height =400 width=800x/>
+<center><img src="/images/blogs/DeepWalk/DeepWalk_Algo.jpg" width=800x/></center>
 
-<!-- ## PyTorch Implementation of DeepWalk -->
+<hr/>
 <h2>PyTorch Implementation of DeepWalk </h2>
 
 Here we will use using the following graph as an example to implement Deep Walk on,
 <!-- ![Example Graph](./graph.png) -->
-<img src="/images/blogs/deepwalk_images/graph.png" height =400 width=800x/>
+<center><img src="/images/blogs/DeepWalk/graph.png" width=800x/></center>
 
 As you can see, there are two connected components so that we can expect than when we create the vectors for each node, the vectors of [1, 2, 3, 7] should be close and similarly that of [4, 5, 6] should be close. Also, if any two vectors are from different groups, then their vectors should also be far away.
 
@@ -127,31 +120,23 @@ Here we will represent the graph using the adjacency list representation. Make s
 ```python
 adj_list = [[1,2,3], [0,2,3], [0, 1, 3], [0, 1, 2], [5, 6], [4,6], [4, 5], [1, 3]]
 size_vertex = len(adj_list)  # number of vertices
-```
 
-<!-- ## Imports -->
-<h2>Imports</h2>
+## Imports
 
-```python
 import torch
 import torch.nn as nn
 import random
-```
 
-<!-- ## Hyperparameters -->
+## Hyperparameters
 <h2>Hyperparameters</h2>
 
-```python
 w=3            # window size
 d=2            # embedding size
 y=200          # walks per vertex
 t=6            # walk length 
 lr=0.025       # learning rate
-```
 
-
-```python
-v=[0,1,2,3,4,5,6,7] #labels of available vertices
+v=[0,1,2,3,4,5,6,7] # labels of available vertices
 ```
 
 <!-- ## Random Walk -->
@@ -190,15 +175,9 @@ class Model(torch.nn.Module):
         hidden = torch.matmul(one_hot, self.phi)
         out    = torch.matmul(hidden, self.phi2)
         return out
-```
 
-
-```python
 model = Model()
-```
 
-
-```python
 def skip_gram(wvi,  w):
     for j in range(len(wvi)):
         for k in range(max(0,j-w) , min(j+w, len(wvi))):
@@ -274,7 +253,7 @@ probability distribution from $O(V)$ to $O(log(V))$
 Let us understand the process with an example.
 
 <!-- ![binary tree](tree.png) -->
-<img src="/images/blogs/deepwalk_images/tree.png" height =400 width=800x/>
+<center><img src="/images/blogs/DeepWalk/tree.png" width=800x/></center>
 In this example, leaf nodes represent the original nodes of our graph. The highlighted nodes and edges make a path from root to an example leaf node $w_2$.
 
 Here, length of the path $L(w_{2}) = 4$.
@@ -362,10 +341,7 @@ The input to hidden weight vector no longer represents the vector corresponding 
 
 ```python
 hierarchicalModel = HierarchicalModel()
-```
 
-
-```python
 def HierarchicalSkipGram(wvi,  w):
    
     for j in range(len(wvi)):
@@ -378,19 +354,13 @@ def HierarchicalSkipGram(wvi,  w):
             for param in hierarchicalModel.parameters():
                 param.data.sub_(lr*param.grad)
                 param.grad.data.zero_()
-```
 
-
-```python
 for i in range(y):
     random.shuffle(v)
     for vi in v:
         wvi = RandomWalk(vi,t)
         HierarchicalSkipGram(wvi, w)
-```
 
-
-```python
 for i in range(8):
     for j in range(8):
         print((hierarchicalModel(i,j).item()*100)//1, end=' ')
@@ -406,8 +376,13 @@ for i in range(8):
     33.0 30.0 20.0 15.0 35.0 28.0 35.0 0.0 
     20.0 26.0 25.0 27.0 6.0 3.0 0.0 90.0 
 
+<hr/>
+
+You can find our implementation made using PyTorch in the following notebook <b><font color="red">[Deep Walk](https://github.com/dsgiitr/graph_nets/blob/master/DeepWalk/DeepWalk_Blog+Code.ipynb)</font></b>. [graph_nets](https://github.com/dsgiitr/graph_nets)
 
 <h3>References</h3>
+
+- [Code & GitHub Repository](https://github.com/dsgiitr/graph_nets)
 
 - [DeepWalk: Online Learning of Social Representations](http://www.perozzi.net/publications/14_kdd_deepwalk.pdf)
 
@@ -424,8 +399,10 @@ for i in range(8):
     - [Negative Sampling](http://mccormickml.com/2017/01/11/word2vec-tutorial-part-2-negative-sampling/)
     - [skip-gram](http://mccormickml.com/2016/04/19/word2vec-tutorial-the-skip-gram-model/)
     
+<hr/>
 <h3>Written By</h3>
 
 - Ajit Pant
 - Shubham Chandel
 - Anirudh Dagar
+- Shashank Gupta
