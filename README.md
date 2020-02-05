@@ -2,7 +2,6 @@
 
 This repo is a supplement to our blog series *Explained: Graph Representation Learning*. The following major papers and corresponding blogs have been covered as part of the series and we look to add blogs on a few other significant works in the field.
 
-<hr/>
 <h2 align="center"> 1. Understanding DeepWalk </h2>
 <img align="right" width="500x" height="120x" src="https://miro.medium.com/max/4005/1*j-P55wBp5PP9oqrxDxdDpw.png">
 
@@ -12,8 +11,6 @@ Unsupervised online learning approach, inspired from word2vec in NLP, but, here 
 - [Code](https://github.com/dsgiitr/graph_nets/blob/master/DeepWalk/DeepWalk.py)
 - [Paper -> DeepWalk: Online Learning of Social Representations](https://arxiv.org/abs/1403.6652)
 
-<br/>
-<hr/>
 
 <h2 align="center"> 2. A Review : Graph Convolutional Networks (GCN) </h2>
 <img align="right" width="500x" src="/GCN/img/gcn_architecture.png">
@@ -25,8 +22,9 @@ GCNs draw on the idea of Convolution Neural Networks re-defining them for the no
 - [Paper -> Semi-Supervised Classification with Graph Convolutional Networks](https://arxiv.org/abs/1609.02907)
 
 
-<br/>
-<hr/>
+
+
+
 
 <h2 align="center"> 3. Graph SAGE(SAmple and aggreGatE) </h2>
 <img align="right" width="500x" src="/GraphSAGE/img/GraphSAGE_cover.jpg">
@@ -37,8 +35,6 @@ Previous approaches are transductive and don't naturally generalize to unseen no
 - [Code](https://github.com/dsgiitr/graph_nets/blob/master/GraphSAGE/GraphSAGE.py)
 - [Paper -> Inductive Representation Learning on Large Graphs](https://arxiv.org/abs/1706.02216)
 
-<br/>
-<hr/>
 
 <h2 align="center"> 4. ChebNet: CNN on Graphs with Fast Localized Spectral Filtering </h2>
 <img align="right" width="600x" src="https://storage.googleapis.com/groundai-web-prod/media/users/user_3036/project_14426/images/x1.png">
@@ -50,7 +46,6 @@ ChebNet is a formulation of CNNs in the context of spectral graph theory.
 - [Paper -> Convolutional Neural Networks on Graphs with Fast Localized Spectral Filtering](https://arxiv.org/abs/1606.09375)
 
 <br/>
-<hr/>
 
 <h2 align="center"> 5. Understanding Graph Attention Networks </h2>
 <img align="right" width="500x" src="/GAT/img/GAT_Cover.jpg">
