@@ -2,6 +2,22 @@
 
 This repo is a supplement to our blog series *Explained: Graph Representation Learning*. The following major papers and corresponding blogs have been covered as part of the series and we look to add blogs on a few other significant works in the field.
 
+
+<h2> Setup </h2>
+------------
+
+Clone the git repository :
+
+```
+git clone https://github.com/dsgiitr/graph_nets.git
+```
+
+Python 3 with Pytorch 1.3.0 are the primary requirements. The `requirements.txt` file contains a listing of other dependencies. To install all the requirements, run the following:
+
+`pip install -r requirements.txt`
+
+------------
+
 <h2 align="center"> 1. Understanding DeepWalk </h2>
 <img align="right" width="500x" height="120x" src="https://miro.medium.com/max/4005/1*j-P55wBp5PP9oqrxDxdDpw.png">
 
