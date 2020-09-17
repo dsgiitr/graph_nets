@@ -48,7 +48,7 @@ Previous approaches are transductive and don't naturally generalize to unseen no
 
 
 <h2 align="center"> 4. ChebNet: CNN on Graphs with Fast Localized Spectral Filtering </h2>
-<img align="right" width="600x" src="https://storage.googleapis.com/groundai-web-prod/media/users/user_3036/project_14426/images/x1.png">
+<img align="right" width="600x" src="https://i.ibb.co/QcfhJRJ/Screenshot-2020-09-17-at-6-50-27-AM.jpg">
 
 ChebNet is a formulation of CNNs in the context of spectral graph theory.
 - [ChebNet Blog](https://dsgiitr.com/blogs/chebnet/)
