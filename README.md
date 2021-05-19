@@ -66,3 +66,19 @@ GAT is able to attend over their neighborhoods’ features, implicitly specifyin
 - [Jupyter Notebook](https://github.com/dsgiitr/graph_nets/blob/master/GAT/GAT_Blog%2BCode.ipynb)
 - [Code](https://github.com/dsgiitr/graph_nets/blob/master/GAT/GAT_PyG.py)
 - [Paper -> Graph Attention Networks](https://arxiv.org/abs/1710.10903)
+
+<br/>
+
+## Citation
+
+Please use the following entry for citing the blog.
+```
+@misc{graph_nets,
+  author = {A. Dagar and A. Pant and S. Gupta and S. Chandel},
+  title = {graph_nets},
+  year = {2020},
+  publisher = {GitHub},
+  journal = {GitHub repository},
+  howpublished = {\url{https://github.com/dsgiitr/graph_nets}},
+}
+```
