@@ -2,6 +2,7 @@ import torch
 import torch.nn as nn
 from torch.nn import init
 from torch.autograd import Variable
+import torch.nn.functional as F
 
 import numpy as np
 import time
@@ -143,7 +144,7 @@ def load_cora():
     labels = np.empty((num_nodes,1), dtype=np.int64)
     node_map = {}
     label_map = {}
-    with open("../cora/cora.content") as fp:
+    with open("./cora/cora.content") as fp:
         for i,line in enumerate(fp):
             info = line.strip().split()
             feat_data[i,:] = [float(x) for x in info[1:-1]]
@@ -153,7 +154,7 @@ def load_cora():
             labels[i] = label_map[info[-1]]
 
     adj_lists = defaultdict(set)
-    with open("../cora/cora.cites") as fp:
+    with open("./cora/cora.cites") as fp:
         for i,line in enumerate(fp):
             info = line.strip().split()
             paper1 = node_map[info[0]]
