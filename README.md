@@ -1,6 +1,6 @@
 <h1 align="center"> Graph Representation Learning </h1>
 
-<img align="center" src="https://dsgiitr.com/images/work/graph_nets.svg">
+<img align="center" src="https://dsgiitr.in/images/work/graph_nets.svg">
 
 This repo is a supplement to our blog series *Explained: Graph Representation Learning*. The following major papers and corresponding blogs have been covered as part of the series and we look to add blogs on a few other significant works in the field.
 
